@@ -1,15 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatting</title>
-    <link rel="stylesheet" href="">
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
+        integrity="sha512-xA6Hp6oezhjd6LiLZynuukm80f8BoZ3OpcEYaqKoCV3HKQDrYjDE1Gu8ocxgxoXmwmSzM4iqPvCsOkQNiu41GA=="
+        crossorigin="anonymous" />
+    <link rel="stylesheet" href="css/chat.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"
+        integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <h1>My Chatting App</h1>
+    <div class="wrap-all">
+        <div class="chat-header">
+            <div class="profile">
+                <i class="fas fa-angle-left"></i>
+                <img src="https://placeimg.com/50/50/any" alt="user" />
+                <span class="name">Junwoo Lee</span>
+            </div>
+            <div class="menus">
+                <i class="fas fa-video"></i>
+                <i class="fas fa-phone"></i>
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        <ul class="chat-container">
+            <li>
+                <img src="https://placeimg.com/30/30/1" alt="user" class="profile">
+                <span class="chat-text">
+                    안녕하세요!!!!
+                </span>
+                <span class="chat-date">오전 11:00:01</span>
+            </li>
+            <li class="received">
+                <img src="https://placeimg.com/30/30/1" alt="user" class="profile">
+                <span class="chat-text">
+                    안녕하세요!!!!
+                </span>
+                <span class="chat-date">오전 11:00:01</span>
+            </li>
+        </ul>
+        <div class="chat-input">
+            <a href="#" class="plus"><i class="fas fa-plus"></i></a>
+            <input type="text" class="message" placeholder="Type your message" />
+            <a href="#" class="send"><i class="fas fa-paper-plane"></i></a>
+        </div>
+    </div>
+    <script>
+        // socket io 연결
+        const socket = io();
+        const sendButton = document.querySelector(".send");
+        const message = document.querySelector(".message");
+        sendButton.addEventListener('click', () => {
+
+            // console.log(message.value);
+            // 서버로 보내는 역할
+            socket.emit('chatting', message.value);
+        })
+        message.addEventListener('keypress', (e) => {
+            console.log(e);
+            if (e.key === 'Enter') {
+                const message = document.querySelector(".message");
+                // 서버로 보내는 역할
+                socket.emit('chatting', message.value);
+            }
+        })
+
+        // 서버에서 받는 역할
+        socket.on('chatting', (msg) => {
+
+            $('.chat-container').append(
+                `<li><img src="https://placeimg.com/30/30/1" alt='user' class="profile"/><span class='chat-text'>${msg}</span><span class='chat-date'>오전 07:21:22</span></li>`
+            );
+            $(".message").val("");
+            // const ul = document.querySelector(".chat-container");
+            // const li = document.createElement("li");
+            // const txt = document.createTextNode(msg);
+            // li.appendChild(txt);
+            // li.classList.add('chat-item')
+            // ul.appendChild(li);
+            // console.log(msg, 'from server!!!');
+        })
+    </script>
 </body>
 
 </html>
